@@ -17,6 +17,7 @@ async function run() {
     try {
         const db = client.db("wildFireDB");
         const serviceCollection = db.collection("service");
+        const reviewCollection = db.collection("review");
 
         app.get("/service", async (req, res) => {
             const query = {}
@@ -40,6 +41,22 @@ async function run() {
             const result = await serviceCollection.insertOne(service);
             console.log(result);
             res.send(result);
+        });
+
+        app.post("/review/:id", async (req, res) => {
+            const id = req.params.id
+            const ratingData = req.body;
+            const result = await reviewCollection.insertOne(ratingData)
+            console.log(result);
+            res.json(result)
+        });
+
+        app.get("/review/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { serviceId: id }
+            const cursor = reviewCollection.find(query);
+            const review = await cursor.toArray();
+            res.json(review)
         });
 
         app.patch("/service/:id", async (req, res) => {
