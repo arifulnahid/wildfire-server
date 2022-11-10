@@ -45,7 +45,6 @@ async function run() {
 
         app.post("/review", async (req, res) => {
             const ratingData = req.body;
-            // console.log(ratingData);
             const result = await reviewCollection.insertOne(ratingData)
             res.json(result)
         });
@@ -65,9 +64,9 @@ async function run() {
             res.json(review)
         })
 
-        app.get("/review/:id", async (req, res) => {
+        app.get("/myreview/:id", async (req, res) => {
             const id = req.params.id;
-            const query = { serviceId: id }
+            const query = { uid: id }
             const cursor = reviewCollection.find(query);
             const review = await cursor.toArray();
             res.json(review)
