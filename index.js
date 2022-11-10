@@ -73,18 +73,25 @@ async function run() {
         });
 
 
-        app.patch("/service/:id", async (req, res) => {
+        app.patch("/review/:id", async (req, res) => {
             const id = req.params.id;
             const rating = req.body;
             const query = { _id: ObjectId(id) }
-            const service = await serviceCollection.findOne(query);
+            const review = await reviewCollection.findOne(query);
             const updateDoc = {
                 $set: {
-                    rating: [...service.rating, rating]
+                    rating: rating.rating,
+                    review: rating.review,
+                    date: rating.date,
+                    displayName: review.displayName,
+                    photoURL: review.photoURL,
+                    uid: review.uid,
+                    serviceId: review.serviceId
                 }
             }
-            const result = await serviceCollection.updateOne(query, updateDoc)
-            // console.log(ratingData);
+            const result = await reviewCollection.updateOne(query, updateDoc)
+
+            console.log(rating);
             res.json(result);
         })
     } finally {
