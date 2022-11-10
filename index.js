@@ -43,13 +43,27 @@ async function run() {
             res.send(result);
         });
 
-        app.post("/review/:id", async (req, res) => {
-            const id = req.params.id
+        app.post("/review", async (req, res) => {
             const ratingData = req.body;
+            // console.log(ratingData);
             const result = await reviewCollection.insertOne(ratingData)
-            console.log(result);
             res.json(result)
         });
+
+        app.delete("/review/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = reviewCollection.deleteOne(query);
+            res.json(result);
+        })
+
+        app.get("/review/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { serviceId: id }
+            const cursor = reviewCollection.find(query);
+            const review = await cursor.toArray();
+            res.json(review)
+        })
 
         app.get("/review/:id", async (req, res) => {
             const id = req.params.id;
@@ -58,6 +72,7 @@ async function run() {
             const review = await cursor.toArray();
             res.json(review)
         });
+
 
         app.patch("/service/:id", async (req, res) => {
             const id = req.params.id;
